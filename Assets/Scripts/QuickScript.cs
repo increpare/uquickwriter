@@ -331,6 +331,12 @@ public class QuickScript : MonoBehaviour {
 		new SquidgeDat("x","n",-1),
 	};
 
+	string[][] wordReplacements = new string[][]{
+		new string[]{"if","f"},
+		new string[]{"of","f"},
+		new string[]{"the","th"}
+	};
+
     int imgWidth=128;
 	int imgHeight=128;
 	int lineHeight = 17;
@@ -437,7 +443,31 @@ public class QuickScript : MonoBehaviour {
 			if (i+2<s.Length && s.Substring(i,3)=="ing"){
 				result.Add(new Character("ing"));
 				i+=2;
-			} 
+				continue;
+			}
+			//need to be at start or after line break
+			if (i==0 || !char.IsLetter(s[i-1])){
+				bool found=false;
+				foreach (var repl in wordReplacements){
+					var l = repl[0].Length;
+					if (l+i>s.Length){
+						continue;
+					}
+					var sub = s.Substring(i,l);
+					if (sub==repl[0]){
+						foreach (var c_repl in repl[1]){
+							result.Add(new Character(c_repl.ToString()));
+						}
+						i+=l-1;
+						found=true;
+						break;
+					}
+				}
+				if (found){ 
+					continue; 
+				}
+
+			}
 			result.Add(new Character(c.ToString()));
 		}
 		return result;
@@ -540,8 +570,11 @@ public class QuickScript : MonoBehaviour {
 		for (var i=1; i<processed.Count; i++) {
 			var a = processed[i-1];
 			var b = processed[i];
+			if (a.c.Length>1||b.c.Length>1){
+				continue;
+			}
 			foreach (var variant in variantselect){
-				if (variant[0]==a.c && variant[0]==b.c){
+				if (variant[0][0]==a.c[0] && variant[0][1]==b.c[0]){
 					a.variant=variant[1];
 					b.variant=variant[2];
 				}
