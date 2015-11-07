@@ -11,19 +11,18 @@ public class QuickScript : MonoBehaviour {
 	public UnityEngine.UI.RawImage rawImage;
 
 	public class Character {
-		public char c; //character
+		public string c; //character
 		public int m; //multiplicity
 		public string variant;
-		public Character(char c){
-			if (c=='w'){
-				this.c='u';
+		public Character(string c){
+			if (c=="w"){
+				this.c="u";
 				this.m=2;
 			} else {
 				this.c=c;
 				this.m=1;
 			}
-			this.variant=this.c.ToString();
-
+			this.variant=this.c;
 		}
 
 		public bool subO(){
@@ -430,12 +429,16 @@ public class QuickScript : MonoBehaviour {
 			var c = s[i];
 			if (i>0){
 				var prev_c = result.Last();
-				if (!char.IsWhiteSpace(c) && prev_c.m==1 && prev_c.c == c){
+				if (!char.IsWhiteSpace(c) && prev_c.m==1 && prev_c.c == c.ToString()){
 					prev_c.m++;
 					continue;
 				}
 			}
-			result.Add(new Character(c));
+			if (i+2<s.Length && s.Substring(i,3)=="ing"){
+				result.Add(new Character("ing"));
+				i+=2;
+			} 
+			result.Add(new Character(c.ToString()));
 		}
 		return result;
 	}
@@ -468,11 +471,11 @@ public class QuickScript : MonoBehaviour {
 		for (int i=0; i<str.Count; i++) {
 			var ch=str[i];
 			print ("printing " + ch.c);
-			if (ch.c==' '){
+			if (ch.c==" "){
 				px+=5;
 				justspace=true;
 				continue;
-			} else if (ch.c=='\n'){
+			} else if (ch.c=="\n"){
 				px=1;
 				py-=lineHeight;
 				justspace=true;
@@ -538,7 +541,7 @@ public class QuickScript : MonoBehaviour {
 			var a = processed[i-1];
 			var b = processed[i];
 			foreach (var variant in variantselect){
-				if (variant[0][0]==a.c && variant[0][1]==b.c){
+				if (variant[0]==a.c && variant[0]==b.c){
 					a.variant=variant[1];
 					b.variant=variant[2];
 				}
