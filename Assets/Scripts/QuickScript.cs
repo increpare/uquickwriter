@@ -30,7 +30,7 @@ public class QuickScript : MonoBehaviour {
 		}
 		
 		public bool noLow(){
-			return "acehijklmnorstuvz1234567890".IndexOf (c) >= 0;
+			return "acehijklmnorstuvz1234567890".IndexOf (c) >= 0 || variant == "x_raised";
 		}
 		
 		public bool noLowLeft(){
@@ -231,7 +231,7 @@ public class QuickScript : MonoBehaviour {
 		new SquidgeDat("p","z",-2),
 		new SquidgeDat("p","n",-1),
 		new SquidgeDat("p","j",-5),
-		new SquidgeDat("p","g",-1),
+		new SquidgeDat("p","g",-3),
 		new SquidgeDat("p","a",-3),
 		new SquidgeDat("o","h",-3),
 		new SquidgeDat("n","r",-2),
@@ -348,6 +348,7 @@ public class QuickScript : MonoBehaviour {
 		new string[]{"the","th"},
 		new string[]{"and","&"},
 		new string[]{"is","s"},
+		new string[]{"or","r"},
 	};
 
 	string[] nokerning = {",","^","*","`","\"","<",">","'",".",":",";","+","=","_"};
@@ -361,9 +362,9 @@ public class QuickScript : MonoBehaviour {
 		return false;
 	}
 
-    int imgWidth=128;
-	int imgHeight=128;
-	int lineHeight = 17;
+    int imgWidth=256;
+	int imgHeight=256;
+	int lineHeight = 16;
 
 	void SetupMaterial(){
 		tex = new Texture2D (imgWidth, imgHeight, TextureFormat.RGB24, false);
@@ -571,7 +572,7 @@ public class QuickScript : MonoBehaviour {
 	}
 	void DrawString(List<Character> str){
 		Color[] pixels = new Color[imgWidth*imgHeight];
-		int px = 1;
+		int px = 5;
 		int py = imgHeight-lineHeight-6;
 
 		bool justspace = true;
@@ -583,7 +584,7 @@ public class QuickScript : MonoBehaviour {
 				justspace=true;
 				continue;
 			} else if (ch.c=="\n"){
-				px=1;
+				px=5;
 				py-=lineHeight;
 				justspace=true;
 				continue;
@@ -617,7 +618,20 @@ public class QuickScript : MonoBehaviour {
 						if (any){
 							px=px+dx+1;
 							if (str[i].c=="d2"){
-								px--;
+								if (prevCh.c=="o"){
+									px-=2;
+								} else if ("ijz".Contains(prevCh.c)){
+									px-=2;
+								} else if ("ehmnrst".Contains(prevCh.c)){
+									px-=3;
+								}  else if ("l".Contains(prevCh.c)){
+									px-=2;
+									str[i].variant="d_short";
+									glyph = GetGlyph(str,i);
+									halo = GetHalo(str,i);
+								} else {
+									px-=4;
+								}
 							}
 						}
 					}
@@ -668,7 +682,7 @@ public class QuickScript : MonoBehaviour {
 			var b = processed[i-2];
 			var c = processed[i-1];
 			var d = processed[i];
-			if (b.variant =='b' && d.variant=='d' && c.noLow()){
+			if (b.variant =="b" && d.variant=="d" && c.noLow()){
 				d.variant="d_long";
 				d.c = "d2";
 			}
