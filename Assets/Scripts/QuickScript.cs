@@ -10,7 +10,7 @@ public class QuickScript : MonoBehaviour {
 	public Texture2D tex;
 	public UnityEngine.UI.RawImage rawImage;
 
-	public class Character {
+	public struct Character {
 		public string c; //character
 		public int m; //multiplicity
 		public string variant;
@@ -62,6 +62,7 @@ public class QuickScript : MonoBehaviour {
 		}
 	}
 
+	private Dictionary<string,List<string[]>> variantDict;
 	private string[][] variantselect = new string[][]{
 		new string[]{"c","d","c_flatlow","d_raised"},
 		new string[]{"c","l","c_flatlonglow","l"},
@@ -186,6 +187,8 @@ public class QuickScript : MonoBehaviour {
 		new string[]{"y","ing","y_long","ing"},
 	};
 
+	private Dictionary<string,List<SquidgeDat> > squidgeDict;
+
 	private SquidgeDat[] squidgeDats = new SquidgeDat[] {
 		//variant chars
 		new SquidgeDat("y","ing",-7),
@@ -208,7 +211,6 @@ public class QuickScript : MonoBehaviour {
 		new SquidgeDat("v","u",-1),
 		new SquidgeDat("v","n",-1),
 		new SquidgeDat("v","h",-2),
-		new SquidgeDat("v","i",-1),
 		new SquidgeDat("u","x",-1),
 		new SquidgeDat("u","n",-1),
 		new SquidgeDat("u","v",-1),
@@ -349,20 +351,16 @@ public class QuickScript : MonoBehaviour {
 		new string[]{"or","r"},
 	};
 
-	string[] nokerning = {",","^","*","`","\"","<",">","'",".",":",";","+","=","_"};
+	string nokerning = ",^*`\"<>'.:;+=_";
 
-	bool NoKerning (string str){
-		foreach (var s in nokerning) {
-			if (s==str){
-				return true;
-			}
-		}
-		return false;
+	bool NoKerning (char ch){
+		return nokerning.IndexOf (ch) >= 0;
 	}
 
-    int imgWidth=256;
-	int imgHeight=256;
+    int imgWidth=320;
+	int imgHeight=200;
 	int lineHeight = 16;
+	int charHeight = 22;
 
 	void SetupMaterial(){
 		tex = new Texture2D (imgWidth, imgHeight, TextureFormat.RGB24, false);
@@ -377,7 +375,7 @@ public class QuickScript : MonoBehaviour {
 	int[,] imageToArray(Texture2D tex){
 		var pixels = tex.GetPixels ();
 		var w = tex.width;
-		var h = tex.height;
+		var h = tex.height-6;
 		var colCount = 0;
 		var foundSomething = true;
         for (var i=1; i<w; i++) {
@@ -385,7 +383,7 @@ public class QuickScript : MonoBehaviour {
 				foundSomething=false;
 				for (var j=0;j<h;j++){
 					var c = pixels[i+w*j];
-					if (!c.Equals(Color.black)){
+					if (c.r>0){
 						foundSomething=true;
 					}
 				}
@@ -427,8 +425,10 @@ public class QuickScript : MonoBehaviour {
 	}
 
 	bool HaloFits(Color[] screen, int[,] halo, int x, int y){
-		for (var i = 0;i<halo.GetLength(0);i++){
-			for (var j = 0;j<halo.GetLength(1);j++){
+		var w = halo.GetLength (0);
+		var h = halo.GetLength (1);
+		for (var i = 0;i<w;i++){
+			for (var j = 0;j<h;j++){
 				var index = (x-1+i)+imgWidth*(y-1+j);
 				if (halo[i,j]>0&&screen[index].r>0.9f){
 					return false;
@@ -497,36 +497,49 @@ public class QuickScript : MonoBehaviour {
 		}
 	}
 
+	Dictionary<char,string> charDict = new Dictionary<char, string> ();
+	List<Character> processStringResult = new  List<Character> ();
 	List<Character> ProcessString(string s){
-		List<Character> result = new List<Character>();
+		processStringResult.Clear ();
 		for (var i=0;i<s.Length;i++){
 			var c = s[i];
 			if (i>0){
-				var prev_c = result.Last();
-				if (!char.IsWhiteSpace(c) && prev_c.m==1 && prev_c.c == c.ToString()){
-					print (prev_c.c +" " + c);
+				var prev_c = processStringResult.Last();
+				if (char.IsLetter(c) && prev_c.m==1 && prev_c.c.Length==1 && prev_c.c[0] == c){
 					prev_c.m++;
 					continue;
 				}
 			}
-			if (i+2<s.Length && s.Substring(i,3)=="ing"){
-				result.Add(new Character("ing"));
+			if (i+2<s.Length && s[i]=='i'&&s[i+1]=='n'&&s[i+2]=='g'){
+				processStringResult.Add(new Character("ing"));
 				i+=2;
 				continue;
 			}
 			//need to be at start or after line break
 			if (i==0 || !char.IsLetter(s[i-1])){
 				bool found=false;
-				foreach (var repl in wordReplacements){
+				for (var k=0;k<wordReplacements.Length;k++){
+					string[] repl = wordReplacements[k];
 					var l = repl[0].Length;
 					if (l+i>s.Length){
 						continue;
 					}
 					if (l+i==s.Length || !char.IsLetter(s[i+l])){
-						var sub = s.Substring(i,l);
-						if (sub==repl[0]){
-							foreach (var c_repl in repl[1]){
-								result.Add(new Character(c_repl.ToString()));
+						bool checksOut=true;
+						for (var j=0;j<l;i++){
+							if (s[i+j]!=repl[0][j]){
+								checksOut=false;
+								break;
+							}
+						}
+						if (checksOut){
+							var c_repl_enum = repl[1].GetEnumerator();
+							while (c_repl_enum.MoveNext()){
+								char c_repl=c_repl_enum.Current;
+								if (!charDict.ContainsKey(c_repl)){
+									charDict[c_repl]=c_repl.ToString();
+								}
+								processStringResult.Add(new Character(charDict[c_repl]));
 							}
 							i+=l-1;
 							found=true;
@@ -539,14 +552,16 @@ public class QuickScript : MonoBehaviour {
 				}
 
 			}
-			result.Add(new Character(c.ToString()));
+			if (!charDict.ContainsKey(c)){
+				charDict[c]=c.ToString();
+			}
+			processStringResult.Add(new Character(charDict[c]));
 		}
-		return result;
+		return processStringResult;
 	}
 	
 	int[,] GetGlyph(List<Character> str, int index){
 		var ch = str [index];
-		print (ch.variant);
 		if (glyphs.ContainsKey(ch.variant)){
 			return glyphs [ch.variant];
 		} else {
@@ -561,24 +576,37 @@ public class QuickScript : MonoBehaviour {
 
 
 	int Squidge(Character a, Character b){
-		foreach (var sd in squidgeDats) {
-			if (sd.a==a.c.ToString() && sd.b==b.c.ToString()){
-				return sd.dx;
+		if (squidgeDict.ContainsKey (a.c)) {
+			var sd_enum = squidgeDict[a.c].GetEnumerator();
+			while (sd_enum.MoveNext()){
+				var sd = (SquidgeDat)sd_enum.Current;
+				if (sd.a==a.c && sd.b==b.c){
+					return sd.dx;
+				}
 			}
 		}
 		return 0;
 	}
+	
+	Color[] pixels;
+
 	void DrawString(List<Character> str){
-		Color[] pixels = new Color[imgWidth*imgHeight];
+		var l = pixels.Length;
+		for (int i=0; i<l; i++) {
+			pixels[i] = new Color();
+		}
 		int px = 5;
 		int py = imgHeight-lineHeight-6;
 
 		bool justspace = true;
 		for (int i=0; i<str.Count; i++) {
 			var ch=str[i];
-			print ("printing " + ch.c);
 			if (ch.c==" "){
 				px+=5;
+				justspace=true;
+				continue;
+			} else if (ch.c=="\t"){
+				px+=15;
 				justspace=true;
 				continue;
 			} else if (ch.c=="\n"){
@@ -599,13 +627,12 @@ public class QuickScript : MonoBehaviour {
 					px+=squidgeOffset-1;
 				} else {
 					var any=false;
-					if ((NoKerning(str[i].c))||(i>0&&NoKerning(str[i-1].c)&&str[i-1].c!="'")){
+					if ((NoKerning(str[i].c[0]))||(i>0&&NoKerning(str[i-1].c[0])&&str[i-1].c!="'")){
 						px--;
 					} else {
 						var dx=0;
 						while (HaloFits(pixels,halo,px+dx,py)){
 							any=true;
-							print (ch.variant+" fits " + dx);
 							dx--;
 							if (px+dx<=0){
 								px=1;
@@ -624,7 +651,9 @@ public class QuickScript : MonoBehaviour {
 									px-=3;
 								}  else if ("l".Contains(prevCh.c)){
 									px-=2;
-									str[i].variant="d_short";
+									var t = str[i];
+									t.variant="d_short";
+									str[i]=t;
 									glyph = GetGlyph(str,i);
 									halo = GetHalo(str,i);
 								} else {
@@ -636,6 +665,7 @@ public class QuickScript : MonoBehaviour {
 				}
 			}
 			justspace=false;
+			/*
 			for (int x=0;x<halo.GetLength(0);x++){
 				for (int y=0;y<halo.GetLength(1);y++){
 					var col = Color.black;
@@ -645,11 +675,19 @@ public class QuickScript : MonoBehaviour {
 //						pixels[px+x-1+(py+y-1)*imgWidth]=Color.gray;
 					}
 				}
+			}*/
+			
+			var w= glyph.GetLength(0);
+			var h = glyph.GetLength(1);
+
+			if (px+w>imgWidth){
+				px=5;
+				py-=lineHeight;
 			}
 
-			for (int x=0;x<glyph.GetLength(0);x++){
-				for (int y=0;y<glyph.GetLength(1);y++){
-					var col = Color.black;
+
+			for (int x=0;x<w;x++){
+				for (int y=0;y<h;y++){
 					var index = glyph[x,y];
 					if ((index==1) || 
 						(index==2&&ch.m>1)){
@@ -658,7 +696,7 @@ public class QuickScript : MonoBehaviour {
 					}
 				}
 			}
-			px+=glyph.GetLength(0)+1;
+			px+=w+1;
 		}
 
 		tex.SetPixels (pixels);
@@ -669,10 +707,14 @@ public class QuickScript : MonoBehaviour {
 		for (var i=1; i<processed.Count; i++) {
 			var a = processed[i-1];
 			var b = processed[i];
-			foreach (var variant in variantselect){
-				if (variant[0]==a.c && variant[1]==b.c){
-					a.variant=variant[2];
-					b.variant=variant[3];
+			if (variantDict.ContainsKey(a.c)){
+				var dictenum = variantDict[a.c].GetEnumerator();
+				while (dictenum.MoveNext()){
+					var variant =  dictenum.Current;
+					if (variant[0]==a.c && variant[1]==b.c){
+						a.variant=variant[2];
+						b.variant=variant[3];
+					}
 				}
 			}
 		}
@@ -689,20 +731,43 @@ public class QuickScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		pixels = new Color[imgWidth*imgHeight];	
+		squidgeDict = new Dictionary<string, List<SquidgeDat> > ();
+		foreach (var sd in squidgeDats) {
+			if (squidgeDict.ContainsKey(sd.a)==false){
+				squidgeDict[sd.a]= new List<SquidgeDat>();
+			}
+			squidgeDict[sd.a].Add (sd);
+		}
+		variantDict = new Dictionary<string, List<string[]>> ();
+		foreach (var v in variantselect) {
+			if (variantDict.ContainsKey(v[0])==false){
+				variantDict[v[0]] = new List<string[]>();
+			}
+			variantDict[v[0]].Add(v);
+		}
 		SetupMaterial ();
 		LoadGlyphs ();
-	}
-
+		oldString = inputString;
+		var processed = ProcessString (inputString);
+		processed.Add ( new Character("_"));
+		replaceCharacters (processed);
+		DrawString (processed);
+    }
+    
 	string oldString = "";
+
+	string allowedChars = " \t\n";
 	// Update is called once per frame
 	void Update () {
-		if (Input.inputString.Length > 0) {
-			var c = Input.inputString [0];
+		var cenum = Input.inputString.GetEnumerator ();
+		while (cenum.MoveNext()){
+			var c = char.ToLower(cenum.Current);
 			if (c == '\b') {
 				if (inputString.Length > 0) {
 					inputString = inputString.Substring (0, inputString.Length - 1);
 				}
-			} else {
+			} else if (glyphs.ContainsKey(c.ToString().ToLower())||allowedChars.IndexOf(c)>=0) {
 				inputString += c;
 			}
 		}
@@ -711,6 +776,7 @@ public class QuickScript : MonoBehaviour {
 			
 			var str = inputString.ToLower ();
 			var processed = ProcessString (str);
+			processed.Add ( new Character("_"));
 			replaceCharacters (processed);
 			DrawString (processed);
 		}
