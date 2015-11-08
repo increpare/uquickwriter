@@ -360,7 +360,6 @@ public class QuickScript : MonoBehaviour {
     int imgWidth=320;
 	int imgHeight=200;
 	int lineHeight = 16;
-	int charHeight = 22;
 
 	void SetupMaterial(){
 		tex = new Texture2D (imgWidth, imgHeight, TextureFormat.RGB24, false);
@@ -507,6 +506,7 @@ public class QuickScript : MonoBehaviour {
 				var prev_c = processStringResult.Last();
 				if (char.IsLetter(c) && prev_c.m==1 && prev_c.c.Length==1 && prev_c.c[0] == c){
 					prev_c.m++;
+					processStringResult[processStringResult.Count-1]=prev_c;
 					continue;
 				}
 			}
@@ -526,16 +526,16 @@ public class QuickScript : MonoBehaviour {
 					}
 					if (l+i==s.Length || !char.IsLetter(s[i+l])){
 						bool checksOut=true;
-						for (var j=0;j<l;i++){
+						for (var j=0;j<l;j++){
 							if (s[i+j]!=repl[0][j]){
 								checksOut=false;
 								break;
 							}
 						}
 						if (checksOut){
-							var c_repl_enum = repl[1].GetEnumerator();
-							while (c_repl_enum.MoveNext()){
-								char c_repl=c_repl_enum.Current;
+							var r = repl[1];
+							for (var i2=0;i2<r.Length;i2++){
+								char c_repl=r[i2];
 								if (!charDict.ContainsKey(c_repl)){
 									charDict[c_repl]=c_repl.ToString();
 								}
@@ -683,6 +683,9 @@ public class QuickScript : MonoBehaviour {
 			if (px+w>imgWidth){
 				px=5;
 				py-=lineHeight;
+				if (py<=0){
+					break;
+				}
 			}
 
 
@@ -712,8 +715,14 @@ public class QuickScript : MonoBehaviour {
 				while (dictenum.MoveNext()){
 					var variant =  dictenum.Current;
 					if (variant[0]==a.c && variant[1]==b.c){
-						a.variant=variant[2];
-						b.variant=variant[3];
+						if (variant[0]!=variant[2]){
+							a.variant=variant[2];
+						}
+						processed[i-1]=a;
+						if (variant[1]!=variant[3]){
+							b.variant=variant[3];
+						}
+						processed[i] = b;
 					}
 				}
 			}
@@ -725,6 +734,7 @@ public class QuickScript : MonoBehaviour {
 			if (b.variant =="b" && d.variant=="d" && c.noLow()){
 				d.variant="d_long";
 				d.c = "d2";
+				processed[i]=d;
 			}
 		}
 	}
@@ -757,7 +767,7 @@ public class QuickScript : MonoBehaviour {
     
 	string oldString = "";
 
-	string allowedChars = " \t\n";
+	string allowedChars = " \t\nw";
 	// Update is called once per frame
 	void Update () {
 		var cenum = Input.inputString.GetEnumerator ();
@@ -765,17 +775,20 @@ public class QuickScript : MonoBehaviour {
 			var c = char.ToLower(cenum.Current);
 			if (c == '\b') {
 				if (inputString.Length > 0) {
-					inputString = inputString.Substring (0, inputString.Length - 1);
+					if (Input.GetKey(KeyCode.LeftApple)||Input.GetKey(KeyCode.RightApple)){
+						inputString = "";
+					} else {
+						inputString = inputString.Substring (0, inputString.Length - 1);
+					}
 				}
-			} else if (glyphs.ContainsKey(c.ToString().ToLower())||allowedChars.IndexOf(c)>=0) {
+			} else if (glyphs.ContainsKey(c.ToString())||allowedChars.IndexOf(c)>=0) {
 				inputString += c;
 			}
 		}
 		if (oldString != inputString) {
 			oldString=inputString;
 			
-			var str = inputString.ToLower ();
-			var processed = ProcessString (str);
+			var processed = ProcessString (inputString);
 			processed.Add ( new Character("_"));
 			replaceCharacters (processed);
 			DrawString (processed);
