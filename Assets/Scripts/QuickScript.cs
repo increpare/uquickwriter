@@ -30,15 +30,15 @@ public class QuickScript : MonoBehaviour {
 		}
 		
 		public bool noLow(){
-			return "acehijklmnorstuvz".IndexOf (c) >= 0;
+			return "acehijklmnorstuvz1234567890".IndexOf (c) >= 0;
 		}
 		
 		public bool noLowLeft(){
-			return "acehijklmnoqrstuvz".IndexOf (c) >= 0;
+			return "acehijklmnoqrstuvz1234567890".IndexOf (c) >= 0;
 		}
 
 		public bool noLowRight(){
-			return "acehijklmnoprstuvyz".IndexOf (c) >= 0;
+			return "acehijklmnoprstuvyz1234567890".IndexOf (c) >= 0;
 		}
 		
 		public bool groundNookLeft(){
@@ -63,127 +63,137 @@ public class QuickScript : MonoBehaviour {
 	}
 
 	private string[][] variantselect = new string[][]{
-		new string[]{"cd","c_flatlow","d_raised"},
-		new string[]{"cl","c_flatlonglow","l"},
-		new string[]{"cj","c_flatlonglow","j"},
-		new string[]{"ca","c_flatlonghigh","a_flat"},
-		new string[]{"ch","c_flatlonghigh","h"},
-		new string[]{"cu","c_flatlonghigh","u"},
-		new string[]{"cv","c_flathigh","v"},
-		new string[]{"cm","c_flatlow","m_long"},
-		new string[]{"cn","c_flathigh","n_long"},
-		new string[]{"el","e_longlow","l"},
-		new string[]{"mn","m_long","n_long"},
-		new string[]{"nm","n_long","m_long"},
-		new string[]{"nt","n_long","t"},
-		new string[]{"nj","n_long","j"},
-		new string[]{"ma","m_long","a_flat"},
-		new string[]{"em","e","m_long"},
-		new string[]{"er","e_longlow","r"},
-		new string[]{"mg","m_long","g_flatupper"},
-		new string[]{"ng","n_long","g_flatupper"},
-		new string[]{"ro","r_long","o"},
-		new string[]{"ns","n_long","s"},
-		new string[]{"us","u","s_shortlow"},
-		new string[]{"vs","v","s_shortlow"},
-		new string[]{"ag","a","g_shortflatupper"},
-		new string[]{"eg","e","g_shortflatupper"},
-		new string[]{"og","o","g_flatupper"},
-		new string[]{"om","o","m_long"},
-		new string[]{"mo","m_long","o"},
-		new string[]{"on","o","n_long"},
-		new string[]{"no","n_long","o"},
-		new string[]{"ug","u","g_shortflatupper"},
-		new string[]{"vg","v","g_shortflatupper"},
-		new string[]{"ta","t","a_flat"},
-		new string[]{"in","i","n_long"},
-		new string[]{"mz","m_long","z"},
-		new string[]{"zm","z","m_long"},
-		new string[]{"mx","m_long","x"},
-		new string[]{"xn","x","n_long"},
-		new string[]{"im","i","m_long"},
-		new string[]{"aq","a","q_high"},
-		new string[]{"bf","b_raised","f_lowered"},
-		new string[]{"bg","b_raised","g_longlow"},
-		new string[]{"bx","b","x_raised"},
-		new string[]{"cg","c_flathigh","g_flatupper"},
-		new string[]{"ci","c_flatlonghigh","i"},
-		new string[]{"cq","c_flathigh","q"},
-		new string[]{"cr","c_flatlow","r"},
-		new string[]{"cs","c_flatlonghigh","s_shortlow"},
-		new string[]{"ct","c_flatlonglow","t"},
-		new string[]{"cx","c_flatlonghigh","x"},
-		new string[]{"cz","c_flatlonghigh","z"},
-		new string[]{"ej","e_longlow","j"},
-		new string[]{"et","e_longlow","t"},
-		new string[]{"hg","h","g_shortupper"},
-		new string[]{"hm","h","m_long"},
-		new string[]{"hq","h","q_high"},
-		new string[]{"jg","j","g_shortupper"},
-		new string[]{"lg","l","g_shortupper"},
-		new string[]{"lm","l","m_long"},
-		new string[]{"jn","j","n_long"},
-		new string[]{"js","j","s_shortlow"},
-		new string[]{"jx","j","x_wide"},
-		new string[]{"mc","m_long","c"},
-		new string[]{"me","m_long","e"},
-		new string[]{"mh","m_long","h"},
-		new string[]{"mi","m_long","i"},
-		new string[]{"mp","m_long","p"},
-		new string[]{"ms","m_long","s"},
-		new string[]{"mu","m_long","u"},
-		new string[]{"mv","m_long","v"},
-		new string[]{"mj","m_long","j"},
-		new string[]{"nl","n_long","l"},
-		new string[]{"nr","n_long","r"},
-		new string[]{"pa","p_long","a_flat"},
-		new string[]{"pg","p_long","g_shortupper"},
-		new string[]{"pj","p_long","j"},
-		new string[]{"pn","p","n_long"},
-		new string[]{"po","p_long","o"},
-		new string[]{"ra","r","a_flat"},
-		new string[]{"rq","r","q_high"},
-		new string[]{"mq","m","q_high"},
-		new string[]{"rg","r","g_shortupper"},
-		new string[]{"rn","r","n_long"},
-		new string[]{"sg","s","g_shortupper"},
-		new string[]{"sq","s","q"},
-		new string[]{"tg","t","g_shortupper"},
-		new string[]{"tn","t","n_long"},
-		new string[]{"tq","t","q_high"},
-		new string[]{"uq","u","q_high"},
-		new string[]{"un","u","n_long"},
-		new string[]{"ux","u","x_wide"},
-		new string[]{"vn","v","n_long"},
-		new string[]{"vq","v","q_high"},
-		new string[]{"xa","x","a_flatlong"},
-		new string[]{"xd","x_raised","d"},
-		new string[]{"xg","x_wide","g_flatupper"},
-		new string[]{"xq","x","q_high"},
-		new string[]{"xs","x","s_shortlow"},
-		new string[]{"xz","x_wide","z"},
-		new string[]{"xu","x_wide","u"},
-		new string[]{"xu","x_wide","u"},
-		new string[]{"ya","y_raised","a"},
-		new string[]{"yc","y_raised","c"},
-		new string[]{"ye","y_raised","e"},
-		new string[]{"yg","y_raised","g"},
-		new string[]{"yi","y_raised","i"},
-		new string[]{"ym","y_raised","m_long"},
-		new string[]{"yn","y_raised","n_long"},
-		new string[]{"yo","y_raised","o"},
-		new string[]{"yh","y_raised","h"},
-		new string[]{"ys","y_raised","s"},
-		new string[]{"yu","y_raised","u"},
-		new string[]{"yv","y_raised","v"},
-		new string[]{"yx","y_raised","x"},
-		new string[]{"yz","y_raised","z"},
-		new string[]{"yq","y","q_high"},
-		new string[]{"zg","z","g_shortupper"},
+		new string[]{"c","d","c_flatlow","d_raised"},
+		new string[]{"c","l","c_flatlonglow","l"},
+		new string[]{"c","j","c_flatlonglow","j"},
+		new string[]{"c","a","c_flatlonghigh","a_flat"},
+		new string[]{"c","h","c_flatlonghigh","h"},
+		new string[]{"c","u","c_flatlonghigh","u"},
+		new string[]{"c","v","c_flathigh","v"},
+		new string[]{"c","m","c_flatlow","m_long"},
+		new string[]{"c","n","c_flathigh","n_long"},
+		new string[]{"e","l","e_longlow","l"},
+		new string[]{"m","n","m_long","n_long"},
+		new string[]{"n","m","n_long","m_long"},
+		new string[]{"n","t","n_long","t"},
+		new string[]{"n","j","n_long","j"},
+		new string[]{"m","a","m_long","a_flat"},
+		new string[]{"e","m","e","m_long"},
+		new string[]{"e","r","e_longlow","r"},
+		new string[]{"m","g","m_long","g_flatupper"},
+		new string[]{"n","g","n_long","g_flatupper"},
+		new string[]{"r","o","r_long","o"},
+		new string[]{"n","s","n_long","s"},
+		new string[]{"u","s","u","s_shortlow"},
+		new string[]{"v","s","v","s_shortlow"},
+		new string[]{"a","g","a","g_shortflatupper"},
+		new string[]{"e","g","e","g_shortflatupper"},
+		new string[]{"o","g","o","g_flatupper"},
+		new string[]{"o","m","o","m_long"},
+		new string[]{"m","o","m_long","o"},
+		new string[]{"o","n","o","n_long"},
+		new string[]{"n","o","n_long","o"},
+		new string[]{"u","g","u","g_shortflatupper"},
+		new string[]{"v","g","v","g_shortflatupper"},
+		new string[]{"t","a","t","a_flat"},
+		new string[]{"i","n","i","n_long"},
+		new string[]{"m","z","m_long","z"},
+		new string[]{"z","m","z","m_long"},
+		new string[]{"m","x","m_long","x"},
+		new string[]{"x","n","x","n_long"},
+		new string[]{"i","m","i","m_long"},
+		new string[]{"a","q","a","q_high"},
+		new string[]{"b","f","b_raised","f_lowered"},
+		new string[]{"b","g","b_raised","g_longlow"},
+		new string[]{"b","x","b","x_raised"},
+		new string[]{"c","g","c_flathigh","g_flatupper"},
+		new string[]{"c","i","c_flatlonghigh","i"},
+		new string[]{"c","q","c_flathigh","q"},
+		new string[]{"c","r","c_flatlow","r"},
+		new string[]{"c","s","c_flatlonghigh","s_shortlow"},
+		new string[]{"c","t","c_flatlonglow","t"},
+		new string[]{"c","x","c_flatlonghigh","x"},
+		new string[]{"c","z","c_flatlonghigh","z"},
+		new string[]{"e","j","e_longlow","j"},
+		new string[]{"e","t","e_longlow","t"},
+		new string[]{"h","g","h","g_shortupper"},
+		new string[]{"h","m","h","m_long"},
+		new string[]{"h","q","h","q_high"},
+		new string[]{"j","g","j","g_shortupper"},
+		new string[]{"l","g","l","g_shortupper"},
+		new string[]{"l","m","l","m_long"},
+		new string[]{"j","n","j","n_long"},
+		new string[]{"j","s","j","s_shortlow"},
+		new string[]{"j","x","j","x_wide"},
+		new string[]{"m","c","m_long","c"},
+		new string[]{"m","e","m_long","e"},
+		new string[]{"m","h","m_long","h"},
+		new string[]{"m","i","m_long","i"},
+		new string[]{"m","p","m_long","p"},
+		new string[]{"m","s","m_long","s"},
+		new string[]{"m","u","m_long","u"},
+		new string[]{"m","v","m_long","v"},
+		new string[]{"m","j","m_long","j"},
+		new string[]{"n","l","n_long","l"},
+		new string[]{"n","r","n_long","r"},
+		new string[]{"p","a","p_long","a_flat"},
+		new string[]{"p","g","p_long","g_shortupper"},
+		new string[]{"p","j","p_long","j"},
+		new string[]{"p","n","p","n_long"},
+		new string[]{"p","o","p_long","o"},
+		new string[]{"r","a","r","a_flat"},
+		new string[]{"r","q","r","q_high"},
+		new string[]{"m","q","m","q_high"},
+		new string[]{"r","g","r","g_shortupper"},
+		new string[]{"r","n","r","n_long"},
+		new string[]{"s","g","s","g_shortupper"},
+		new string[]{"s","q","s","q"},
+		new string[]{"t","g","t","g_shortupper"},
+		new string[]{"t","n","t","n_long"},
+		new string[]{"t","q","t","q_high"},
+		new string[]{"u","q","u","q_high"},
+		new string[]{"u","n","u","n_long"},
+		new string[]{"u","x","u","x_wide"},
+		new string[]{"v","n","v","n_long"},
+		new string[]{"v","q","v","q_high"},
+		new string[]{"x","a","x","a_flatlong"},
+		new string[]{"x","d","x_raised","d"},
+		new string[]{"x","g","x_wide","g_flatupper"},
+		new string[]{"x","q","x","q_high"},
+		new string[]{"x","s","x","s_shortlow"},
+		new string[]{"x","z","x_wide","z"},
+		new string[]{"x","u","x_wide","u"},
+		new string[]{"x","u","x_wide","u"},
+		new string[]{"y","a","y_raised","a"},
+		new string[]{"y","c","y_raised","c"},
+		new string[]{"y","e","y_raised","e"},
+		new string[]{"y","g","y_raised","g"},
+		new string[]{"y","i","y_raised","i"},
+		new string[]{"y","m","y_raised","m_long"},
+		new string[]{"y","n","y_raised","n_long"},
+		new string[]{"y","o","y_raised","o"},
+		new string[]{"y","h","y_raised","h"},
+		new string[]{"y","s","y_raised","s"},
+		new string[]{"y","u","y_raised","u"},
+		new string[]{"y","v","y_raised","v"},
+		new string[]{"y","x","y_raised","x"},
+		new string[]{"y","z","y_raised","z"},
+		new string[]{"y","q","y","q_high"},
+		new string[]{"z","g","z","g_shortupper"},
+		new string[]{"t","ing","t","ing_short"},
+		new string[]{"r","ing","r_long","ing_short"},
+		new string[]{"i","ing","i","ing_short"},
+		new string[]{"m","ing","m_long","ing_short"},
+		new string[]{"y","ing","y_long","ing"},
 	};
 
 	private SquidgeDat[] squidgeDats = new SquidgeDat[] {
 		//variant chars
+		new SquidgeDat("y","ing",-7),
+		new SquidgeDat("r","ing",-5),
+		new SquidgeDat("t","ing",-5),
+		new SquidgeDat("i","ing",-5),
+		new SquidgeDat("m","ing",-5),
 		new SquidgeDat("z","j",-2),
 		new SquidgeDat("z","r",-1),
 		new SquidgeDat("x","u",-1),
@@ -194,6 +204,7 @@ public class QuickScript : MonoBehaviour {
 		new SquidgeDat("x","g",-2),
 		new SquidgeDat("x","a",-1),
 		new SquidgeDat("v","z",-1),
+		new SquidgeDat("j","h",-1),
 		new SquidgeDat("v","x",-1),
 		new SquidgeDat("v","u",-1),
 		new SquidgeDat("v","n",-1),
@@ -334,8 +345,21 @@ public class QuickScript : MonoBehaviour {
 	string[][] wordReplacements = new string[][]{
 		new string[]{"if","f"},
 		new string[]{"of","f"},
-		new string[]{"the","th"}
+		new string[]{"the","th"},
+		new string[]{"and","&"},
+		new string[]{"is","s"},
 	};
+
+	string[] nokerning = {",","^","*","`","\"","<",">","'",".",":",";","+","=","_"};
+
+	bool NoKerning (string str){
+		foreach (var s in nokerning) {
+			if (s==str){
+				return true;
+			}
+		}
+		return false;
+	}
 
     int imgWidth=128;
 	int imgHeight=128;
@@ -415,17 +439,62 @@ public class QuickScript : MonoBehaviour {
 		return true;
 	}
 
+	string[][] nameAliases = new string[][] {
+		new string[]{"comma",","},
+		new string[]{"period","."},
+		new string[]{"apostrophe","'"},
+		new string[]{"apostrophe","'"},
+		new string[]{"dash","-"},
+		new string[]{"quote","\""},
+		new string[]{"question","?"},
+		new string[]{"colon",":"},
+		new string[]{"semicolon",";"},
+		new string[]{"exclamation","!"},
+		new string[]{"at","@"},
+		new string[]{"euro","€"},
+		new string[]{"pound","£"},
+		new string[]{"dollar","$"},
+		new string[]{"percent","%"},
+		new string[]{"carot","^"},
+		new string[]{"ampersand","&"},
+		new string[]{"star","*"},
+		new string[]{"leftparen","("},
+		new string[]{"rightparen",")"},
+		new string[]{"underscore","_"},
+		new string[]{"equals","="},
+		new string[]{"plus","+"},
+		new string[]{"leftbracket","["},
+		new string[]{"rightbracket","]"},
+		new string[]{"rightbrace","{"},
+		new string[]{"leftbrace","}"},
+		new string[]{"pipe","|"},
+		new string[]{"backslash","\\"},
+		new string[]{"forwardslash","/"},
+		new string[]{"lessthan","<"},
+		new string[]{"greaterthan",">"},
+		new string[]{"backtick","`"},
+		new string[]{"tilde","~"},
+		new string[]{"hash","#"},
+	};
+
 	void LoadGlyphs(){
 		glyphs.Clear ();
 		var loaded = Resources.LoadAll ("Letters");
 		foreach (var a in loaded) {
+			var n = a.name;
+			foreach(var na in nameAliases){
+				if (na[0]==n){
+					n=na[1];
+					break;
+				}
+			}
             Texture2D tex = (Texture2D)a;
 			var pixelGrid = imageToArray(tex);
 			var halo = genHalo(pixelGrid,false);
 			var haloDouble = genHalo(pixelGrid,true);
-			glyphs.Add(a.name,pixelGrid);
-			halos.Add(a.name,halo);
-			haloDoubles.Add(a.name,haloDouble);
+			glyphs.Add(n,pixelGrid);
+			halos.Add(n,halo);
+			haloDoubles.Add(n,haloDouble);
 		}
 	}
 
@@ -436,6 +505,7 @@ public class QuickScript : MonoBehaviour {
 			if (i>0){
 				var prev_c = result.Last();
 				if (!char.IsWhiteSpace(c) && prev_c.m==1 && prev_c.c == c.ToString()){
+					print (prev_c.c +" " + c);
 					prev_c.m++;
 					continue;
 				}
@@ -453,14 +523,16 @@ public class QuickScript : MonoBehaviour {
 					if (l+i>s.Length){
 						continue;
 					}
-					var sub = s.Substring(i,l);
-					if (sub==repl[0]){
-						foreach (var c_repl in repl[1]){
-							result.Add(new Character(c_repl.ToString()));
+					if (l+i==s.Length || !char.IsLetter(s[i+l])){
+						var sub = s.Substring(i,l);
+						if (sub==repl[0]){
+							foreach (var c_repl in repl[1]){
+								result.Add(new Character(c_repl.ToString()));
+							}
+							i+=l-1;
+							found=true;
+							break;
 						}
-						i+=l-1;
-						found=true;
-						break;
 					}
 				}
 				if (found){ 
@@ -476,7 +548,12 @@ public class QuickScript : MonoBehaviour {
 	int[,] GetGlyph(List<Character> str, int index){
 		var ch = str [index];
 		print (ch.variant);
-		return glyphs [ch.variant];
+		if (glyphs.ContainsKey(ch.variant)){
+			return glyphs [ch.variant];
+		} else {
+			print("didn't find " + ch.variant);
+			return null;
+		}
 	}
 	int[,] GetHalo(List<Character> str, int index){
 		var ch = str [index];
@@ -512,6 +589,9 @@ public class QuickScript : MonoBehaviour {
 				continue;
 			} 
 			var glyph = GetGlyph(str,i);
+			if (glyph==null){
+				continue;
+			}
 			var halo = GetHalo(str,i);
 			if (i>0&&!justspace){
 				var prevCh=str[i-1];
@@ -519,20 +599,27 @@ public class QuickScript : MonoBehaviour {
 				if (squidgeOffset<0){
 					px+=squidgeOffset-1;
 				} else {
-					var dx=0;
 					var any=false;
-					while (HaloFits(pixels,halo,px+dx,py)){
-						any=true;
-						print (ch.variant+" fits " + dx);
-						dx--;
-						if (px+dx<=0){
-							px=1;
-							dx=0;
-							break;
+					if ((NoKerning(str[i].c))||(i>0&&NoKerning(str[i-1].c))){
+						px--;
+					} else {
+						var dx=0;
+						while (HaloFits(pixels,halo,px+dx,py)){
+							any=true;
+							print (ch.variant+" fits " + dx);
+							dx--;
+							if (px+dx<=0){
+								px=1;
+								dx=0;
+								break;
+							}
 						}
-					}
-					if (any){
-						px=px+dx+1;
+						if (any){
+							px=px+dx+1;
+							if (str[i].c=="d2"){
+								px--;
+							}
+						}
 					}
 				}
 			}
@@ -570,31 +657,51 @@ public class QuickScript : MonoBehaviour {
 		for (var i=1; i<processed.Count; i++) {
 			var a = processed[i-1];
 			var b = processed[i];
-			if (a.c.Length>1||b.c.Length>1){
-				continue;
-			}
 			foreach (var variant in variantselect){
-				if (variant[0][0]==a.c[0] && variant[0][1]==b.c[0]){
-					a.variant=variant[1];
-					b.variant=variant[2];
+				if (variant[0]==a.c && variant[1]==b.c){
+					a.variant=variant[2];
+					b.variant=variant[3];
 				}
 			}
-
+		}
+		for (var i=2;i<processed.Count;i++){
+			var b = processed[i-2];
+			var c = processed[i-1];
+			var d = processed[i];
+			if (b.variant =='b' && d.variant=='d' && c.noLow()){
+				d.variant="d_long";
+				d.c = "d2";
+			}
 		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		var str = inputString.ToLower ();
 		SetupMaterial ();
 		LoadGlyphs ();
-		var processed = ProcessString (str);
-		replaceCharacters (processed);
-		DrawString (processed);
 	}
-	
+
+	string oldString = "";
 	// Update is called once per frame
 	void Update () {
+		if (Input.inputString.Length > 0) {
+			var c = Input.inputString [0];
+			if (c == '\b') {
+				if (inputString.Length > 0) {
+					inputString = inputString.Substring (0, inputString.Length - 1);
+				}
+			} else {
+				inputString += c;
+			}
+		}
+		if (oldString != inputString) {
+			oldString=inputString;
+			
+			var str = inputString.ToLower ();
+			var processed = ProcessString (str);
+			replaceCharacters (processed);
+			DrawString (processed);
+		}
 	
 	}
 }
