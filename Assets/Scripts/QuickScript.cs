@@ -126,7 +126,6 @@ public class QuickScript : MonoBehaviour {
 		new string[]{"j","s","j","s_shortlow"},
 		new string[]{"j","x","j","x_wide"},
 		new string[]{"m","c","m_long","c"},
-		new string[]{"m","e","m_long","e"},
 		new string[]{"m","h","m_long","h"},
 		new string[]{"m","i","m_long","i"},
 		new string[]{"m","p","m_long","p"},
@@ -237,7 +236,6 @@ public class QuickScript : MonoBehaviour {
 		new SquidgeDat("n","r",-2),
 		new SquidgeDat("n","l",-2),
 		new SquidgeDat("m","c",-3),
-		new SquidgeDat("m","e",-3),
 		new SquidgeDat("m","h",-2),
 		new SquidgeDat("m","p",-1),
 		new SquidgeDat("m","s",-1),
@@ -601,7 +599,7 @@ public class QuickScript : MonoBehaviour {
 					px+=squidgeOffset-1;
 				} else {
 					var any=false;
-					if ((NoKerning(str[i].c))||(i>0&&NoKerning(str[i-1].c))){
+					if ((NoKerning(str[i].c))||(i>0&&NoKerning(str[i-1].c)&&str[i-1].c!="'")){
 						px--;
 					} else {
 						var dx=0;
