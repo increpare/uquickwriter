@@ -574,7 +574,6 @@ public class QuickScript : MonoBehaviour {
 		return ch.m==1? halos [ch.variant]:haloDoubles [ch.variant];
 	}
 
-
 	int Squidge(Character a, Character b){
 		if (squidgeDict.ContainsKey (a.c)) {
 			var sd_enum = squidgeDict[a.c].GetEnumerator();
@@ -683,11 +682,12 @@ public class QuickScript : MonoBehaviour {
 			if (px+w>imgWidth){
 				px=5;
 				py-=lineHeight;
-				if (py<=0){
-					break;
-				}
 			}
-
+			
+			if (py<=0){
+				inputString=inputString.Substring(0,inputString.Length-1);
+				break;
+			}
 
 			for (int x=0;x<w;x++){
 				for (int y=0;y<h;y++){
@@ -739,8 +739,15 @@ public class QuickScript : MonoBehaviour {
 		}
 	}
 
+	void OnApplicationQuit() {
+		SaveString();
+	}
+
 	// Use this for initialization
 	void Start () {
+		
+		pagex = PlayerPrefs.GetInt("pagex",0);
+		LoadString ();
 		pixels = new Color[imgWidth*imgHeight];	
 		squidgeDict = new Dictionary<string, List<SquidgeDat> > ();
 		foreach (var sd in squidgeDats) {
@@ -766,23 +773,169 @@ public class QuickScript : MonoBehaviour {
     }
     
 	string oldString = "";
+	private int pagex=0;
 
+	void LoadString(){
+		inputString = "";
+		var path = Application.persistentDataPath+"/f"+pagex + ".txt";
+		if (System.IO.File.Exists (path)) {
+			inputString = System.IO.File.ReadAllText (path);
+		}
+	}
+
+	void SaveString(){			
+		var path = Application.persistentDataPath+"/f"+pagex  + ".txt";
+		System.IO.File.WriteAllText (path,inputString);
+	}
+
+	void MovePage(int newx){	
+		if (newx < 0 || newx > 9) {
+			return;
+		}
+		pagex = PlayerPrefs.GetInt("pagex",0);
+		SaveString ();
+		pagex = newx;
+		LoadString ();
+		PlayerPrefs.SetInt ("pagex", pagex);
+	}
+	
+	private TextEditor te = new TextEditor ();
 	string allowedChars = " \t\nw";
+	bool apple=false;
+	bool shift=false;
+
+	void DoCopy(bool copyall){
+		if (copyall){
+			var str = "";
+			var oldpage = pagex;
+			for (int i=0;i<10;i++){
+				if (i>0){
+					str+="\n\n-----\n\n";
+				}
+				MovePage(i);
+				str+=inputString;
+			}
+			MovePage (oldpage);
+			te.content= new GUIContent(str);
+		} else {
+			te.content = new GUIContent(inputString);
+		}
+		te.SelectAll();
+		te.Copy();
+	}
+
+	void SaveAll(){
+		var str = "";
+		var oldpage = pagex;
+		for (int i=0;i<10;i++){
+			if (i>0){
+				str+="\n\n-----\n\n";
+			}
+			MovePage(i);
+			str+=inputString;
+		}
+		MovePage (oldpage);
+		
+		var path = Application.persistentDataPath+"/all.txt";
+		System.IO.File.WriteAllText (path,str);
+	}
+
+	void OpenDir(){
+		SaveAll ();
+		var p = new System.Diagnostics.Process();
+		p.StartInfo.RedirectStandardError=true;
+		p.StartInfo.RedirectStandardOutput=true;
+		p.StartInfo.UseShellExecute=false;
+		p.StartInfo.FileName="/usr/bin/open";
+		p.StartInfo.Arguments = '"'+Application.persistentDataPath+'"';
+		p.Start();
+		inputString+=(p.StandardOutput.ReadToEnd());
+		inputString+=(p.StandardError.ReadToEnd());
+	}
+
+	void Clear(bool all){
+		if (all) {
+			DoCopy (true);
+			for (int i=0; i<10; i++) {
+				inputString = "";
+				MovePage (i);
+				inputString = "";
+			}
+			MovePage (0);
+		} else {
+			inputString="";
+		}
+	}
+
+	int[] pageIndexes = {9,0,1,2,3,4,5,6,7,8};
 	// Update is called once per frame
 	void Update () {
-		var cenum = Input.inputString.GetEnumerator ();
-		while (cenum.MoveNext()){
-			var c = char.ToLower(cenum.Current);
+		Cursor.visible = false;
+		if (Input.GetKeyDown (KeyCode.LeftCommand)) {
+			apple=true;
+		} 
+		if (Input.GetKeyDown (KeyCode.F1)) {
+			OpenDir();
+		}
+		if (Input.GetKeyUp (KeyCode.LeftCommand)) {
+			apple=false;
+		} 
+		if (Input.GetKeyDown (KeyCode.LeftShift)) {
+			shift=true;
+		} 
+		if (Input.GetKeyUp (KeyCode.LeftShift)) {
+			shift=false;
+		} 
+		
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Clear (shift);
+		}
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			MovePage(pagex-1);
+		}
+		if (Input.GetKeyDown (KeyCode.DownArrow)) {
+			MovePage(pagex+1);
+		}
+		/*
+		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			MovePage(-1,0);
+		}
+		if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			MovePage(1,0);
+		}*/
+		var s = Input.inputString;
+		for (var si=0;si<s.Length;si++){
+
+			var c = char.ToLower(s[si]);
 			if (c == '\b') {
 				if (inputString.Length > 0) {
-					if (Input.GetKey(KeyCode.LeftApple)||Input.GetKey(KeyCode.RightApple)){
+					if (apple && shift){		
+						Clear(true);
+					} else if (apple){
 						inputString = "";
 					} else {
 						inputString = inputString.Substring (0, inputString.Length - 1);
 					}
 				}
 			} else if (glyphs.ContainsKey(c.ToString())||allowedChars.IndexOf(c)>=0) {
-				inputString += c;
+				if (apple && c=='s'){
+					SaveString();
+				} else if (apple && char.IsDigit(c)){
+					Debug.Log("moving page to "+c);
+					MovePage(pageIndexes[int.Parse(c.ToString())]);
+				} else if (apple && c=='c'){
+					DoCopy(shift);
+				} else if (apple && c=='v'){
+					te.content = new GUIContent("");
+					te.Paste();
+					print (te.content.text);
+					s += te.content.text;
+					apple=false;
+				} else if (apple && c=='o'){
+					OpenDir();
+				} else {
+					inputString += c;
+				}
 			}
 		}
 		if (oldString != inputString) {
